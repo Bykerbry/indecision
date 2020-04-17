@@ -29,6 +29,29 @@ var IndecisionApp = function (_React$Component) {
     }
 
     _createClass(IndecisionApp, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            try {
+                var jsonString = localStorage.getItem('options');
+                var options = JSON.parse(jsonString);
+                if (options) {
+                    this.setState(function () {
+                        return { options: options };
+                    });
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate(prevProps, prevState) {
+            if (prevState.options.length !== this.state.options.length) {
+                localStorage.setItem('options', JSON.stringify(this.state.options));
+            }
+            console.log('it updated!');
+        }
+    }, {
         key: 'handleDeleteOptions',
         value: function handleDeleteOptions() {
             this.setState(function () {
@@ -104,7 +127,7 @@ var Header = function Header(props) {
         React.createElement(
             'p',
             null,
-            'This is the header'
+            'This is the header...'
         )
     );
 };
@@ -129,6 +152,11 @@ var Options = function Options(props) {
             'button',
             { onClick: props.handleDeleteOptions },
             'Remove All'
+        ),
+        props.options.length === 0 && React.createElement(
+            'p',
+            null,
+            'Enter some options to get started!'
         ),
         React.createElement(
             'ol',
@@ -251,7 +279,6 @@ ReactDOM.render(<App />, document.getElementById('app'))
 */
 
 /*
-
 class Counter extends React.Component {
     constructor(props) {
         super(props)
@@ -262,14 +289,25 @@ class Counter extends React.Component {
             count: props.count
         }
     }
+    componentDidMount() {
+        let count = localStorage.getItem('count')
+        if (count) {
+            count = parseInt(count)
+            this.setState(() => ({ count }))
+        }
+    }
+    componentDidUpdate(prevState, prevProps) {
+        if (prevState.count !== this.state.count) {
+            localStorage.setItem('count', this.state.count)
+        }
+    }
     handleAddOne() {
         this.setState((prevState) => {
             return {
-                count: prevState.count+1
+                count: prevState.count + 1
             }
         });
     }
-
     handleSubtractOne() {
         this.setState((prevState => {
             return {
@@ -277,7 +315,6 @@ class Counter extends React.Component {
             }
         }))
     }
-
     handleReset() {
         this.setState(() => {
             return {
